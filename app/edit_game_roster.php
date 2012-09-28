@@ -5,15 +5,14 @@ if (!isset($game_id) || !$game_id) {$game_id=$_GET['gid'];}
 if (!isset($team_id) || !$team_id) {$team_id=$_GET['tid'];}
 
 //get our team id and list of current rostered players
-$query = "SELECT * FROM `game_rosters` WHERE game_id = $game_id AND team_id = $team_id";
-$result = mysql_query($query);
-while ($row=mysql_fetch_assoc($result)) {
-    $roster_id=$row['id'];
-    $comp_id=$row['comp_id'];
-    $player_ids = $row['player_ids'];
-    $numbers = $row['numbers'];
-    $frontrows = $row['frontrows'];
-}
+$roster = $db->getRoster($game_id, $team_id);
+$roster_id=$roster['id'];
+$comp_id=$roster['comp_id'];
+$player_ids = $roster['player_ids'];
+$numbers = $roster['numbers'];
+$frontrows = $roster['frontrows'];
+$positions = $roster['positions'];
+
 
 //DON'T NEED?
 //get the team's UUID to match against players Team UUID
@@ -51,7 +50,7 @@ while ($row=mysql_fetch_assoc($result)) {
         echo "<input type='hidden' id='comp_id' value='$comp_id' />";
         echo "<input type='hidden' id='team_id' value='$team_id' />";
         echo "<input type='hidden' id='roster_id' value='$roster_id' />";
-        echo "<input type='button' id='presubmit' value='Fill with Previous Roster' />";
+        echo "<input type='button' id='presubmit' class='btn btn-primary' value='Fill with Previous Roster' />";
         echo "</form>\n";
     }
 }
@@ -114,17 +113,20 @@ foreach ($frows as &$fr) {
 $cplayers = array();
 $cplayers = explode('-', substr($player_ids, 1, (strlen($player_ids)-2)));
 
+$cpositions = array();
+$cpositions = explode('-', substr($positions, 1, (strlen($positions)-2)));
+
 //header for columns
 echo "<table class='table'>\n";
 $frhead = ($comp_type == 1) ? '<th>FR</th>' : '';
-echo "<tr><th>Num.</th><th>Name</th>$frhead</tr>\n";
+echo "<tr><th>Num.</th><th>Name</th><th>Position</th>$frhead</tr>\n";
 
 //Create select for each roster spot and provide an option for each player for team
 for ($j=1;$j<=$max_game;$j++) {
     echo "<tr>";
 
     //show number select, 0-99
-    echo "<td><select id='n$j'>\n";
+    echo "<td><select id='n$j' class='input-small chzn-select'>\n";
     for ($k=0;$k<100;$k++) {
         if ($k==$numvals[$j]) {$stest = 'selected';} else {$stest='';}
         echo "<option id='n$j' $stest>$k</option>\n";
@@ -132,7 +134,7 @@ for ($j=1;$j<=$max_game;$j++) {
     echo "</select></td>\n";
 
     //show player select
-    echo "<td><select id='p$j'>\n";
+    echo "<td><select id='p$j' data-placeholder='Select Player' class='input-large chzn-select'>\n";
     echo "<option value=''></option>\n";
 
     $i=1;
@@ -143,7 +145,15 @@ for ($j=1;$j<=$max_game;$j++) {
     }
 
     echo "</select></td>\n";
+    echo "<td> <select data-placeholder='Select Position' class='input-large chzn-select' id='pos$j'>";
 
+    $positions = getPositionList();
+    $current_player_position = empty($cpositions[$j - 1]) ? 'NIL' : $cpositions[$j - 1];
+    foreach ($positions as $pos_code => $pos_name) {
+        $selected = $current_player_position == $pos_code ? 'selected' : '';
+        echo "<option value='$pos_code' $selected>$pos_name</option>\n";
+    }
+    echo "</select></td>";
     //show front row checkbox if this is a 15s comp
     if ($comp_type==1) {
         if ($frows[$j]==1) {$c="checked='checked'";} else {$c='';}
@@ -159,5 +169,5 @@ echo "<input type='hidden' id='max' value='$max_game' />";
 echo "<input type='hidden' id='game_id' value='$game_id' />";
 echo "<input type='hidden' id='team_id' value='$team_id' />";
 echo "<input type='hidden' id='roster_id' value='$roster_id' />";
-echo "<input type='button' id='grsubmit' value='Update Roster' />";
+echo "<input type='button' id='grsubmit' class='btn btn-primary' value='Update Roster' />";
 echo "</form>\n";

@@ -19,6 +19,15 @@ class DataSource {
     }
 
     /**
+     * Add a game.
+     */
+    public function addGame($game_info) {
+        $query = "INSERT INTO `games` VALUES ('', '" . implode("', '", $game_info) . "')";
+        $result = mysql_query($query);
+        return $result;
+    }
+
+    /**
      * Retrieve game by serial id or uuid.
      *
      * @param mixed $id
@@ -55,7 +64,7 @@ class DataSource {
      * @param string $params.
      *  Set of params (WHERE, ORDER, etc)
      */
-    public function getTeam($uuid, $params = "") {
+    public function getTeam($id, $params = "") {
         $search_id = DataSource::uuidIsValid($id) ? $this->getSerialIDByUUID('teams', $id) : $id;
         $query = "SELECT * from `teams` WHERE id=$search_id" . $params;
         $result = mysql_query($query);
@@ -69,6 +78,18 @@ class DataSource {
         return $result;
     }
 
+    public function getTeamGames($team_id) {
+        $query = "SELECT * FROM `games` WHERE home_id = $team_id OR away_id = $team_id ORDER BY kickoff";
+        $result = mysql_query($query);
+        $team_games = array();
+        if (!empty($result)) {
+            while($team_game = mysql_fetch_assoc($result)) {
+                $team_games[] = $team_game;
+            }
+        }
+        return empty($team_games) ? FALSE : $team_games;
+    }
+
     /**
      * Retrieve a serial id by uuid.
      * @param string $table_name
@@ -78,7 +99,10 @@ class DataSource {
     public function getSerialIDByUUID($table_name, $uuid) {
         $query = "SELECT id FROM `$table_name` WHERE uuid='$uuid'";
         $result = mysql_query($query);
-        $serial_id = mysql_fetch_assoc($result);
+        $serial_id = array();
+        if (!empty($result)) {
+          $serial_id = mysql_fetch_assoc($result);
+        }
         return empty($serial_id['id']) ? FALSE : $serial_id['id'];
     }
 
@@ -99,6 +123,13 @@ class DataSource {
         $game_search_id = DataSource::uuidIsValid($game_id) ? $this->getSerialIDByUUID('games', $game_id) : $game_id;
         $team_search_id = DataSource::uuidIsValid($team_id) ? $this->getSerialIDByUUID('teams', $team_id) : $team_id;
         $query = "SELECT * FROM `game_rosters` WHERE game_id = $game_search_id AND team_id = $team_search_id";
+        $result = mysql_query($query);
+        $roster = mysql_fetch_assoc($result);
+        return $roster;
+    }
+
+    public function getRosterById($id) {
+        $query = "SELECT * FROM `event_rosters` WHERE id = $id";
         $result = mysql_query($query);
         $roster = mysql_fetch_assoc($result);
         return $roster;
