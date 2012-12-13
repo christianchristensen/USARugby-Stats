@@ -29,9 +29,7 @@
 		</head>
 		<body class="bg_standings">
 		<h1 class="docTitle"><xsl:value-of select="sports-metadata/sports-title"/></h1>
-		
-
-			<xsl:choose>
+            <xsl:choose>
 			<xsl:when test="sports-content">
 				<xsl:apply-templates/>    <!-- Call all subtemplates -->
 			</xsl:when>
@@ -177,10 +175,6 @@
 
 <!-- template for standings -->
 <xsl:template match="standing">
-	<xsl:if test="@date-label or @content-label">
-		<!--<p class="standline"><xsl:value-of select="@content-label"/><xsl:text> </xsl:text><xsl:value-of select="@date-label"/></p>-->
-	</xsl:if>
-
 	<!-- uncomment the part below when debugging -->
 	<!--
 	<table><tr><td bgcolor="#cccccc">
@@ -212,15 +206,20 @@
 		</xsl:for-each>
 	</tr>
 	<tr class="blueline">
-		<!--<td>Rank</td>-->
-		<td><xsl:value-of select="@content-label"/><xsl:text> </xsl:text><xsl:value-of select="@date-label"/></td>
+		<td><xsl:if test="@date-label or @content-label"><xsl:value-of select="@content-label"/><xsl:text></xsl:text><xsl:value-of select="@date-label"/></xsl:if></td>
         <td>GP</td>
 		<td>W</td>
 		<td>L</td>
 		<td>T</td>
-		<td><span title="points scored for">PF</span></td>
-		<td><span title="points scored against">PA</span></td>
-        <td><span title="points differential">PD</span></td>
+        <td>
+          <span title="points scored for">PF</span>
+        </td>
+        <td>
+          <span title="points scored against">PA</span>
+        </td>
+        <td>
+          <span title="points differential">PD</span>
+        </td>
 		<xsl:if test="team[1]/team-stats/outcome-totals/@try-bonus"><td>BT</td></xsl:if>
 		<xsl:if test="team[1]/team-stats/outcome-totals/@loss-bonus"><td>BL</td></xsl:if>
         	<xsl:if test="team[1]/team-stats/outcome-totals/@forfeits"><td>FF</td></xsl:if>
@@ -262,17 +261,14 @@
 		</xsl:call-template>
 	</xsl:for-each>
 	</table>
-    </xsl:template>
+</xsl:template>
 <!-- end template for standing -->
 
 <!-- Named template to process a  team in a standing -->
 <xsl:template name="standing-team">
 	<xsl:param name="oneteam"/>
-	<tr class="td-stats" valign="baseline">                                    <!--one row for each team-->
-		<!--<td>
-		<span class="rank"><xsl:value-of select="$oneteam/team-stats/rank/@value"/></span>   put the rank in the first field
-		</td>-->
-
+	<tr class="td-stats" valign="baseline">
+      <!--one row for each team-->
 		<td nowrap="nowrap"><b>
 			<xsl:for-each select="$oneteam/team-metadata/name"> <!--Build the name in the second field-->
 			<xsl:if test="@language">
