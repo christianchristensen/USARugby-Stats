@@ -745,4 +745,50 @@ class DataSource {
         return $columns;
     }
 
+    /**
+     * Set the status of a team to hidden.
+     * @param int $team_id
+     */
+    public function hideTeam($team_id) {
+        $team_id = mysql_real_escape_string($team_id);
+        $query = "UPDATE teams SET status='hide' WHERE id=$team_id";
+        $result = mysql_query($query);
+    }
+
+    /**
+     * Set the status of a team to show.
+     * @param int $team_id
+     */
+    public function showTeam($team_id) {
+        $team_id = mysql_real_escape_string($team_id);
+        $query = "UPDATE teams SET status='show' WHERE id=$team_id";
+        $result = mysql_query($query);
+    }
+
+    /**
+     * Set all team status to show.
+     */
+    public function showAllTeams() {
+        $query = "UPDATE teams SET status='show'";
+        $result = mysql_query($query);
+    }
+
+    /**
+     * Set all team status to hide.
+     */
+    public function hideAllTeams() {
+        $query = "UPDATE teams SET status='hide'";
+        $result = mysql_query($query);
+    }
+
+    /**
+     * Show teams by type name.
+     * @param string $type
+     */
+    public function showTeamType($type) {
+        $type = mysql_escape_string($type);
+        $this->hideAllTeams();
+        $query = "UPDATE teams SET status='show' WHERE type='$type'";
+        $result = mysql_query($query);
+    }
 }
