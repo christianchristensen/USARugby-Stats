@@ -11,21 +11,24 @@ if (isset($_POST['submit'])) {
     echo '<div class="alert alert-success">Selected groups hidden.</div>';
 
     $submit = $request->get('submit');
-    if (strpos($submit, 'Hide All') === 0) {
+    if (strcmp($submit, 'Hide All') === 0) {
         $db->hideAllTeams();
     }
-    elseif (strpos($submit, 'Show All') === 0) {
+    elseif (strcmp($submit, 'Show All') === 0) {
         $db->showAllTeams();
     }
-    elseif (strpos($submit, 'Show Teams Only') === 0) {
+    elseif (strcmp($submit, 'Show Teams Only') === 0) {
         $db->hideAllTeams();
         $query = "UPDATE teams SET status='show' WHERE type='team'";
         $result = mysql_query($query);
     }
     else {
-        $db->showAllTeams();
-        foreach ($_POST as $name => $value) {
-            $db->hideTeam($value);
+        $teamid = $request->get('hideshowteamid');
+        if (strcmp($submit, 'Hide') === 0) {
+            $db->hideTeam($teamid);
+        }
+        elseif (strcmp($submit, 'Show') === 0) {
+            $db->showTeam($teamid);
         }
     }
 }
@@ -42,22 +45,23 @@ $teams = $db->getAllTeams();
   <input class="btn" name="submit" type="submit" value="Show Teams Only" />
 </form>
 <hr />
-<form name="teams_showhide" id="teams_showhide" method="POST" action="">
-  <input type="checkbox" name="check_all" id="active" value="Select All"/><span>Select All</span>
-  <input class="btn btn-warning btntop" name="submit" type="submit" value="Hide Groups" />
-    <?php
-    foreach ($teams as $uuid => $team) {
-        echo '<label class=\"checkbox\">';
-        if ($team['status'] == "hide") {
-            echo "<input class='grps-active' checked='checked' type='checkbox' name='team_{$team['uuid']}' value='{$team['id']}'>";
-        }
-        else {
-            echo "<input class='grps-active' type='checkbox' name='team_{$team['uuid']}' value='{$team['id']}'>";
-        }
-        $type = ucfirst($team['type']);
-        echo "  {$team['name']} - {$team['description']} - {$type} (<small>$uuid</small>)";
-        echo '</label>';
-    }
-    ?>
-    <input class="btn btn-warning btntop" name="submit" type="submit" value="Hide Groups" />
-</form>
+
+<table>
+  <?php
+  foreach ($teams as $uuid => $team) {
+      echo '<tr><td><form name="teams_showhide" id="teams_showhide" method="POST" action="">';
+      if ($team['status'] == "hide") {
+          echo "<input type='hidden' name='hideshowteamid' value='{$team['id']}'>";
+          echo "<input class='btn' name='submit' type='submit' value='Show' />";
+      }
+      else {
+          echo "<input type='hidden' name='hideshowteamid' value='{$team['id']}'>";
+          echo "<input class='btn btn-primary' name='submit' type='submit' value='Hide' />";
+      }
+      $type = ucfirst($team['type']);
+      echo "  {$team['name']} - {$team['description']} - {$type} (<small>$uuid</small>)";
+      echo '</form></td></tr>';
+  }
+  ?>
+</table>
+

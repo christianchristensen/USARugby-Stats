@@ -756,6 +756,16 @@ class DataSource {
     }
 
     /**
+     * Set the status of a team to show.
+     * @param int $team_id
+     */
+    public function showTeam($team_id) {
+        $team_id = mysql_real_escape_string($team_id);
+        $query = "UPDATE teams SET status='show' WHERE id=$team_id";
+        $result = mysql_query($query);
+    }
+
+    /**
      * Set all team status to show.
      */
     public function showAllTeams() {
