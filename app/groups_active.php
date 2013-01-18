@@ -18,9 +18,7 @@ if (isset($_POST['submit'])) {
         $db->showAllTeams();
     }
     elseif (strcmp($submit, 'Show Teams Only') === 0) {
-        $db->hideAllTeams();
-        $query = "UPDATE teams SET status='show' WHERE type='team'";
-        $result = mysql_query($query);
+        $db->showTeamType('team');
     }
     else {
         $teamid = $request->get('hideshowteamid');

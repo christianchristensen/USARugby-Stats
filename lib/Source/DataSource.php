@@ -780,4 +780,15 @@ class DataSource {
         $query = "UPDATE teams SET status='hide'";
         $result = mysql_query($query);
     }
+
+    /**
+     * Show teams by type name.
+     * @param string $type
+     */
+    public function showTeamType($type) {
+        $type = mysql_escape_string($type);
+        $this->hideAllTeams();
+        $query = "UPDATE teams SET status='show' WHERE type='$type'";
+        $result = mysql_query($query);
+    }
 }
