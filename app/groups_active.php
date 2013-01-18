@@ -12,27 +12,20 @@ if (isset($_POST['submit'])) {
 
     $submit = $request->get('submit');
     if (strpos($submit, 'Hide All') === 0) {
-        $query = "UPDATE teams SET status='hide'";
-        $result = mysql_query($query);
+        $db->hideAllTeams();
     }
     elseif (strpos($submit, 'Show All') === 0) {
-        $query = "UPDATE teams SET status='show'";
-        $result = mysql_query($query);
+        $db->showAllTeams();
     }
     elseif (strpos($submit, 'Show Teams Only') === 0) {
-        $query = "UPDATE teams SET status='hide'";
-        $result = mysql_query($query);
+        $db->hideAllTeams();
         $query = "UPDATE teams SET status='show' WHERE type='team'";
         $result = mysql_query($query);
     }
     else {
-        $query = "UPDATE teams SET status='show'";
-        $result = mysql_query($query);
+        $db->showAllTeams();
         foreach ($_POST as $name => $value) {
-            $team_id = mysql_real_escape_string($value);
-            $query = "UPDATE teams SET status='hide' WHERE id=$team_id";
-            $result = mysql_query($query);
-            // $db->hideTeam($value);
+            $db->hideTeam($value);
         }
     }
 }
