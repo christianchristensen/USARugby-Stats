@@ -112,6 +112,14 @@ class DataSource {
         if (empty($team_info['id'])) {
             $team_info['id'] = 'NULL';
         }
+        if (empty($team_info['status'])) {
+            if (!empty($team_info['type']) && (strtolower($team_info['type']) == 'team')) {
+                $team_info['status'] = 'show';
+            }
+            else {
+                $team_info['status'] = 'hide';
+            }
+        }
         if (!empty($team_info['resources']) && is_array($team_info['resources'])) {
             $team_info['resources'] = serialize($team_info['resources']);
         }

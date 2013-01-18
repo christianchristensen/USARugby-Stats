@@ -18,7 +18,7 @@ if (editCheck(1)) {
         <div id="team-wrapper">
           <div class="control-group">
             <div class="controls">
-              <select data-placeholder='Team' name='team' id='team' class="required input-medium chzn-select-team" style="width: 100%;">
+              <select data-placeholder='Team' name='team' id='team' class="required input-medium chzn-select" style="width: 100%;">
                   <option value=''></option>
                   <?php
                     //give a list of every team to choose from
@@ -31,7 +31,8 @@ if (editCheck(1)) {
                     $query = "SELECT * FROM `teams` WHERE 1 $andsort AND status = 'show' ORDER BY name ASC";
                     $result = mysql_query($query);
                     while ($row=mysql_fetch_assoc($result)) {
-                        echo "<option data-type='{$row['type']}' data-description='{$row['description']}' value='{$row['id']}'>{$row['name']}</option>";
+                        $type = ucfirst($row['type']);
+                        echo "<option value='{$row['id']}'>{$row['name']} - {$row['description']} - {$type}</option>";
                     }
                   ?>
               </select>
