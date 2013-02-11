@@ -2,6 +2,8 @@
 
 namespace Source\Job;
 
+use Source\QueueHelper;
+
 use Kue\Job;
 use Source\APSource;
 use Source\DataSource;
@@ -59,6 +61,10 @@ class GroupSyncJob implements Job
                     $existing_teams[$team['uuid']] = $team_info;
                 }
             }
+
+            // Sync a specific group's additional information.
+            $qh = new QueueHelper();
+            $qh->GroupAboveSync($team['uuid'], $attributes, $team_info['type']);
         }
         // @TODO: Log status of queue operation: "X Groups Added"
     }

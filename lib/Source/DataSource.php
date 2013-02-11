@@ -159,6 +159,14 @@ class DataSource {
         return $result;
     }
 
+    public function updateTeamAbove($team_uuid, $above_uuid) {
+        $team_uuid = mysql_escape_string($team_uuid);
+        $above_uuid = mysql_escape_string($above_uuid);
+        $query = "UPDATE teams SET group_above_uuid='$above_uuid' WHERE uuid='$team_uuid'";
+        $result = mysql_query($query);
+        return $result;
+    }
+
     public function getTeamGames($team_id) {
         $query = "SELECT g.*, c.league_type FROM games g JOIN comps c ON g.comp_id=c.id WHERE home_id = $team_id OR away_id = $team_id ORDER BY kickoff";
         $result = mysql_query($query);

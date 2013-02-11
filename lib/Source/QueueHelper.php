@@ -4,6 +4,7 @@ namespace Source;
 
 use Phive\Queue\InMemoryQueue;
 use Phive\Queue\Db\Pdo\MysqlQueue;
+use Source\Job\GroupAboveSyncJob;
 use Source\Job\GroupMembersSyncGroupsJob;
 use Source\Job\GroupMembersSyncJob;
 use Source\Job\GroupSyncJob;
@@ -37,6 +38,25 @@ class QueueHelper
             $sessionattributes = $_SESSION['_sf2_attributes'];
         }
         $this->queue->push(serialize(new GroupSyncJob($sessionattributes)));
+    }
+
+    /**
+     * Enqueue Group above info sync job to be processed.
+     *
+     * @param $uuid
+     *   Group UUID to lookup group above information.
+     * @param $sessionattributes
+     */
+    public function GroupAboveSync($uuid, $sessionattributes = null, $type_info = null)
+    {
+        if (empty($sessionattributes)) {
+            $sessionattributes = $_SESSION['_sf2_attributes'];
+        }
+        // We only want to sync teams if type info is specified.
+        if (!empty($type_info) && ($type_info != 'team')) {
+            return;
+        }
+        $this->queue->push(serialize(new GroupAboveSyncJob($uuid, $sessionattributes)));
     }
 
     /**
