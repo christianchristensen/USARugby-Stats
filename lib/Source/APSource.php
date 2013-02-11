@@ -70,4 +70,16 @@ class APSource extends Client {
         // @TODO: Move this to the upstream library.
         $this->delete("/api/v1/rest/events/$uuid");
     }
+
+    public function getSubgroups($uuid) {
+        // @TODO: Move this to the upstream library.
+        return $this->get("/api/v1/rest/groups/$uuid/subgroups/tree", array(
+            'depth' => 17,
+            'include_group_info' => 0,
+            'include_hidden' => 0,
+            'inclusive' => 1,
+            'is_admin' => 0,
+            'is_member' => 0,
+        ));
+    }
 }

@@ -24,6 +24,7 @@ class GroupSyncJob implements Job
         $teams = array();
         $offset = 0;
         $added = 0;
+        $temp = $client->getSubgroups('6a503184-e968-11e1-bf28-12313d186528');
         do {
             $response = $client->userGetMyGroups($attributes['user_uuid'], '*,group_type', $offset, 1000);
             $offset+= 1;
