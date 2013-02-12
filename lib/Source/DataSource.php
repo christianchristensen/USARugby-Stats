@@ -168,7 +168,15 @@ class DataSource {
     }
 
     public function getTeamGames($team_id) {
-        $query = "SELECT g.*, c.league_type FROM games g JOIN comps c ON g.comp_id=c.id WHERE home_id = $team_id OR away_id = $team_id ORDER BY kickoff";
+        $query = "SELECT t2.id FROM teams t JOIN teams t2 ON t2.group_above_uuid = t.uuid WHERE t.id = $team_id";
+        $result = mysql_query($query);
+        $club_ids = array($team_id);
+        while ($club_id = mysql_fetch_assoc($result)) {
+            array_push($club_ids, $club_id['id']);
+        }
+        $team_ids = implode(',', $club_ids);
+
+        $query = "SELECT g.*, c.league_type FROM games g JOIN comps c ON g.comp_id=c.id WHERE home_id IN ($team_ids) OR away_id IN ($team_ids) ORDER BY kickoff";
         $result = mysql_query($query);
         $team_games = array();
         if (!empty($result)) {
