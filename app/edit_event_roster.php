@@ -15,15 +15,16 @@ while ($row=mysql_fetch_assoc($result)) {
 }
 
 //get the team's UUID to match against players Team FSI ID
-$query = "SELECT uuid FROM `teams` WHERE id = $team_id";
+$query = "SELECT uuid, group_above_uuid FROM `teams` WHERE id = $team_id";
 $result = mysql_query($query);
 while ($row=mysql_fetch_assoc($result)) {
     $uuid=$row['uuid'];
+    $above_uuid=$row['group_above_uuid'];
 }
 
 //Get the players that have a Team FSI ID that matches our team's FSI ID
 $players = array();
-$query = "SELECT id FROM `players` WHERE team_uuid = '$uuid' ORDER BY lastname ASC";
+$query = "SELECT id FROM `players` WHERE team_uuid IN ('$uuid', '$above_uuid') ORDER BY lastname ASC";
 $result = mysql_query($query);
 while ($row=mysql_fetch_assoc($result)) {
     $players[]=$row['id'];

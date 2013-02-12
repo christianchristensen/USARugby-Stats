@@ -166,6 +166,7 @@ CREATE TABLE `teams` (
   `description` varchar(1024) DEFAULT NULL,
   `type` varchar(64) DEFAULT NULL,
   `status` varchar(10) NOT NULL,
+  `group_above_uuid` char(36) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
