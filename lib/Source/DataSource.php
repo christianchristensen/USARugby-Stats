@@ -807,4 +807,32 @@ class DataSource {
         $query = "UPDATE teams SET status='show' WHERE type='$type'";
         $result = mysql_query($query);
     }
+
+    /**
+     * Get the game status given a game id.
+     * @param int $id
+     *
+     * @return array $status
+     */
+    public function getGameStatus($id) {
+        $status = array();
+        $search_id = DataSource::uuidIsValid($id) ? $this->getSerialIDByUUID('games', $id) : $id;
+        $query = "SELECT games.status, game_status.status_name FROM `games`, `game_status` WHERE games.id = $search_id AND games.status = game_status.id";
+        $result = mysql_query($query);
+        return empty($result) ? $result : mysql_fetch_assoc($result);
+    }
+
+    /**
+     * Update game status.
+     * @param int $status
+     * @param int $game_id
+     *
+     * @return boolean $result
+     */
+    public function updateGameStatus($status, $game_id) {
+        $search_id = DataSource::uuidIsValid($game_id) ? $this->getSerialIDByUUID('games', $game_id) : $game_id;
+        $status = mysql_real_escape_string($status);
+        $query = "UPDATE games SET status=$status WHERE id=$search_id";
+        return mysql_query($query);
+    }
 }
