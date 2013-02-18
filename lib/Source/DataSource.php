@@ -245,61 +245,61 @@ class DataSource {
                 // Home games record.
                 if ($team_game['home_id'] == $team_id) {
                     $record['favor'] += $team_game['home_score'];
-                    $record['against']+= $team_game['away_score'];
+                    $record['against'] += $team_game['away_score'];
                     if ($status == 'Home Forfeit') {
                         $record['favor'] = 0;
                         $record['points'] -= 1;
                         $record['forfeits'] += 1;
-                        if ($record['against'] < 20) {
-                            $record['against'] = 20;
+                        if ($team_game['away_score'] < 20) {
+                            $team_game['away_score'] = 20;
                         }
                     } elseif ($status == 'Away Forfeit') {
-                        if ($record['favor'] < 20) {
-                            $record['favor'] = 20;
+                        if ($team_game['home_score'] < 20) {
+                            $team_game['home_score'] = 20;
                             $tries = 4;
                         }
                     }
-                    if ($record['favor'] > $record['against']) {
+                    if ($team_game['home_score'] > $team_game['away_score']) {
                         $record['home_wins']++;
                         $record['points'] += 4;
-                    } elseif ($record['favor'] < $record['against']) {
+                    } elseif ($team_game['home_score'] < $team_game['away_score']) {
                         $record['home_losses']++;
-                        if ($record['favor'] + 7 >= $record['against']) {
+                        if ($team_game['home_score'] + 7 >= $team_game['away_score']) {
                             $record['points'] += 1;
                             $record['loss_bonus_total'] ++;
                         }
-                    } elseif ($record['favor'] == $record['against']) {
+                    } elseif ($team_game['home_score'] == $team_game['away_score']) {
                         $record['home_ties']++;
                         $record['points'] += 2;
                     }
                 }
                 // Away record.
                 else if ($team_game['away_id'] == $team_id) {
-                    $record['favor']+= $team_game['away_score'];
-                    $record['against']+= $team_game['home_score'];
+                    $record['favor'] += $team_game['away_score'];
+                    $record['against'] += $team_game['home_score'];
                     if ($status == 'Away Forfeit') {
                         $record['favor'] = 0;
                         $record['points'] -= 1;
                         $record['forfeits'] += 1;
-                        if ($record['against'] < 20) {
-                            $record['against'] = 20;
+                        if ($team_game['home_score'] < 20) {
+                            $team_game['home_score'] = 20;
                         }
                     } elseif ($status == 'Home Forfeit') {
-                        if ($record['favor'] < 20) {
-                            $record['favor'] = 20;
+                        if ($team_game['away_score'] < 20) {
+                            $team_game['away_score'] = 20;
                             $tries = 4;
                         }
                     }
-                    if ($record['favor'] > $record['against']) {
+                    if ($team_game['away_score'] > $team_game['home_score']) {
                         $record['away_wins']++;
                         $record['points'] += 4;
-                    } elseif ($record['favor'] < $record['against']) {
+                    } elseif ($team_game['away_score'] < $team_game['home_score']) {
                         $record['away_losses']++;
-                        if ($record['favor'] + 7 >= $record['against']) {
+                        if ($team_game['away_score'] + 7 >= $team_game['home_score']) {
                             $record['points'] += 1;
                             $record['loss_bonus_total'] ++;
                         }
-                    } elseif ($record['favor'] == $record['against']) {
+                    } elseif ($team_game['away_score'] == $team_game['home_score']) {
                         $record['away_ties']++;
                         $record['points'] += 2;
                     }
