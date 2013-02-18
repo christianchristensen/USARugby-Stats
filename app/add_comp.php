@@ -110,6 +110,9 @@ if (!empty($id)) {
         <option <?php if ($max_match == 99) echo 'selected';?> value='99'>Unlimited</option>
     </select>
 
+    <label for="bypass_checkin" id="bypass_checkin_label">Bypass Check-In For Rosters</label>
+    <input id="bypass_checkin" name="bypass_checkin" type="checkbox" value=1>
+
     <br/>
     <br/>
     <?php

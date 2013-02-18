@@ -8,29 +8,42 @@ if (!isset($team_id) || !$team_id) {$team_id=$_GET['tid'];}
 $roster = $db->getRoster($game_id, $team_id);
 $roster_id=$roster['id'];
 $comp_id=$roster['comp_id'];
+$competition = $db->getCompetition($comp_id);
 $player_ids = $roster['player_ids'];
 $numbers = $roster['numbers'];
 $frontrows = $roster['frontrows'];
 $positions = $roster['positions'];
 
 
-//DON'T NEED?
-//get the team's UUID to match against players Team UUID
-$query = "SELECT uuid FROM `teams` WHERE id = $team_id";
+//get the team's UUID to match against players Team FSI ID
+$query = "SELECT uuid, group_above_uuid FROM `teams` WHERE id = $team_id";
 $result = mysql_query($query);
 while ($row=mysql_fetch_assoc($result)) {
     $uuid=$row['uuid'];
+    $above_uuid=$row['group_above_uuid'];
 }
 
 //Get the players that are on this competition's event roster
 $players = array();
-$query = "SELECT player_ids FROM `event_rosters` WHERE comp_id = $comp_id AND team_id=$team_id";
-$result = mysql_query($query);
-if (!empty($result)) {
+
+// If bypass checkin was selected for the competition, then display players
+// directly from teams.
+if ($competition['bypass_checkin']) {
+    $query = "SELECT id FROM `players` WHERE team_uuid IN ('$uuid', '$above_uuid') ORDER BY lastname ASC";
+    $result = mysql_query($query);
     while ($row=mysql_fetch_assoc($result)) {
-        $temp=$row['player_ids'];
+        $players[]=$row['id'];
     }
-    $players = array_filter(explode('-', $temp));
+}
+else {
+    $query = "SELECT player_ids FROM `event_rosters` WHERE comp_id = $comp_id AND team_id=$team_id";
+    $result = mysql_query($query);
+    if (!empty($result)) {
+        while ($row=mysql_fetch_assoc($result)) {
+            $temp=$row['player_ids'];
+        }
+        $players = array_filter(explode('-', $temp));
+    }
 }
 
 //Get the roster limit and comp type (15s or 7s) from the comp info
