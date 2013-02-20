@@ -127,7 +127,7 @@ class DataSource {
             $team_info['resources'] = 'NULL';
         }
         foreach ($columns as $col) {
-            $values .= is_null($team_info[$col]) ? 'NULL' : "'" . $team_info[$col] . "'";
+            $values .= is_null($team_info[$col]) ? 'NULL' : "'" . mysql_real_escape_string($team_info[$col]) . "'";
             if ($count < $max_count) {
                 $values .= ',';
             }
