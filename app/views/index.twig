@@ -25,24 +25,18 @@
             <p>Online Rugby competition statistics management and reporting.</p>
 
             <p><a href="/login" id="login-allplayers"><img src="/assets/blue_signup_btn.png" /></a></p>
-            <label for='access-code' id='access-code_label'>Access Code</label>
-            <input id='access-code' name='access-code' type='text'>
-            <input type='button' class='add btn btn-primary' id='provideAccess' name='provideAccess' value='Login with access code' />
+            <p>- or -</p>
+            <p>
+              <form class="form-inline">
+                <input id='access-code' name='access-code' type='password' placeholder="Access Code" class="input-small">
+                <input type='button' class='add btn btn-primary' id='provideAccess' name='provideAccess' value='Login' />
+              </form>
+            </p>
           </div>
         </div>
       </div>
 
-      <div class="grid row-fluid">
-        <div class="span span8 offset2 clearfix">
-          <div class="well">
-            <h3>Overview</h3>
-            <p>The National Championship Series web application is designed to facilitate the management of championship event rosters, scores, and game information. It is designed to work from any phone, computer, or tablet that can access the internet.</p>
-            <br/>
-            <p>By: Matt Trenary, <a href="https://www.allplayers.com/">AllPlayers.com</a> (<a href="https://github.com/AllPlayers/USARugby-Stats">source</a>)
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- By: Matt Trenary, AllPlayers.com (source: https://github.com/AllPlayers/USARugby-Stats) -->
   {% endblock %}
   {% block jsfooter %}
     {{ parent() }}
