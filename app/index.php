@@ -144,13 +144,13 @@ $app->get('/login', function(Request $request) use ($app) {
 /**
  * Login with access code.
  */
-$app->get('/login_access_code', function(Request $request) use ($app) {
+$app->match('/login_access_code', function(Request $request) use ($app) {
         include_once './db.php';
         $app['session']->start();
-        $user = $db->getUser(NULL, $app['request']->get('code'));
+        $user = $db->getUser(NULL, $app['request']->get('access-code'));
         if (!$user) {
             echo "Invalid access code.";
-            return FALSE;
+            return $app->redirect('/');
         }
         $_SESSION['user'] = $user['login'];
         $_SESSION['teamid'] = $user['team'];
@@ -160,7 +160,7 @@ $app->get('/login_access_code', function(Request $request) use ($app) {
         $app['session']->set('auth_token', $admin_user['token']);
         $app['session']->set('access_secret', $admin_user['secret']);
         return $app->redirect('/');
-    });
+    })->method('GET|POST');
 
 /**
  *  OAuth authorization callback once user verifies.
