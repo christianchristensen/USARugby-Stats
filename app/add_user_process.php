@@ -4,6 +4,7 @@ include_once './include_mini.php';
 if (editCheck(1)) {
     $email = mysql_real_escape_string($request->get('login'));
     $access = $request->get('access');
+    $proxy_user = $request->get('proxy_user');
     if (!isset($access) || !$access) {$access=4;}
 
     if ($access==4) {
@@ -24,6 +25,7 @@ if (editCheck(1)) {
           'team' => $team,
           'access' => $access,
           'uuid' => NULL,
+          'proxy_user' => $proxy_user
         );
         $db->addUser($user_info);
       }

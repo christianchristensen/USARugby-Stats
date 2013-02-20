@@ -98,7 +98,7 @@ class DataSource {
         $query = "SELECT * from `teams` WHERE id=$search_id" . $params;
         $result = mysql_query($query);
         $team = mysql_fetch_assoc($result);
-        if (!empty($team['resources'])) {
+        if (!empty($team['resources']) && $team['resources'] != 'NULL') {
             $team['resources'] = unserialize($team['resources']);
         }
         return $team;
