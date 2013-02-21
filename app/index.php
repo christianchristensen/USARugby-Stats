@@ -57,7 +57,6 @@ $app->get('/', function() use ($app) {
         } else {
             $temp_token = $app['session']->get('access_token');
             $temp_secret = $app['session']->get('access_secret');
-            $secret = $app['session']->get('auth_secret');
 
             // HACK perform access check on Matts app
             include_once './session.php';
@@ -143,6 +142,27 @@ $app->get('/login', function(Request $request) use ($app) {
     });
 
 /**
+ * Login with access code.
+ */
+$app->match('/login_access_code', function(Request $request) use ($app) {
+        include_once './db.php';
+        $app['session']->start();
+        $user = $db->getUser(NULL, $app['request']->get('access-code'));
+        if (!$user) {
+            echo "Invalid access code.";
+            return $app->redirect('/');
+        }
+        $_SESSION['user'] = $user['login'];
+        $_SESSION['teamid'] = $user['team'];
+        $_SESSION['access'] = $user['access'];
+        $admin_user = $db->getUser($user['proxy_user']);
+        $app['session']->set('access_token', $admin_user['token']);
+        $app['session']->set('auth_token', $admin_user['token']);
+        $app['session']->set('access_secret', $admin_user['secret']);
+        return $app->redirect('/');
+    })->method('GET|POST');
+
+/**
  *  OAuth authorization callback once user verifies.
  */
 $app->get('/auth', function() use ($app) {
@@ -221,6 +241,7 @@ $app->get('/auth', function() use ($app) {
                 $_SESSION['user'] = $local_user['login'];
                 $_SESSION['teamid'] = $local_user['team'];
                 $_SESSION['access'] = $local_user['access'];
+                $_SESSION['user_id'] = $local_user['id'];
 
                 $db->updateUser($local_user['id'], $local_user);
 

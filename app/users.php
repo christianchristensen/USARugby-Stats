@@ -14,4 +14,9 @@ echo "<h1>Add a User</h1>\n";
 include_once './add_user.php';
 echo "</div>";
 
+echo "<div id='accessadd'>";
+echo "<h1>Add Access</h1>\n";
+include_once './add_access.php';
+echo "</div>";
+
 include_once './footer.php';

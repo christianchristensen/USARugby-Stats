@@ -939,4 +939,45 @@ $(document).ready(function() {
     return false;
     });
 
+    // Add new access code.
+    $("#addAccess").live('click', function() {
+        $('.error').not(function(index){
+            return $(this).hasClass('control-group');
+        }).hide();
+
+        var login = $("input#login-access").val();
+        if (login== "") {
+            $("label#login_error_access").show();
+            $("input#login-access").focus();
+            return false;
+        }
+        var team = $('#team-access').val();
+        if (team == "") {
+            $("label#team_access_error").show();
+            $("input#team-access").focus();
+            return false;
+        }
+
+        var access = $('#access-team').val();
+        if (access == "") {
+            $("label#access_error").show();
+            $("input#access-team").focus();
+            return false;
+        }
+        var proxy_user = $('#proxy_user').val();
+        $.post('/add_user_process.php',
+        {
+            login: login,
+            team: team,
+            access: access,
+            proxy_user: proxy_user
+        },
+        function(data){
+            if(data) alert(data);
+            reloadData('#users', 'users_list.php');
+        });
+
+        return false;
+    });
+
 });
