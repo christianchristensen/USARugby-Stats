@@ -446,16 +446,17 @@ function get_standings($comp_id, $db, $domain) {
         $team_records[$uuid] = $record;
         $points[$uuid] = $record['points'];
         $games_played[$uuid] = $record['total_games'];
+        $point_diff[$uuid] = $record['favor'] - $record['against'];
         $divisions[$uuid] = ($team['division_id'] != 0) ? $team['division_id'] : NULL;
     }
 
     if (empty($divisions) || in_array(NULL, $divisions)) {
         $standing = $root->appendChild($doc->createElement('standing'));
         // Sort by ranking.
-        array_multisort($points, SORT_DESC, $games_played, SORT_ASC, $teams);
+        array_multisort($points, SORT_DESC, $point_diff, SORT_DESC, $games_played, SORT_ASC, $teams);
     } else {
         // Sort by divisions then by ranking.
-        array_multisort($divisions, SORT_DESC, $points, SORT_DESC, $games_played, SORT_ASC, $teams);
+        array_multisort($divisions, SORT_DESC, $points, SORT_DESC, $point_diff, SORT_DESC, $games_played, SORT_ASC, $teams);
         $divisions = array();
     }
 

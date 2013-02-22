@@ -317,9 +317,8 @@ class DataSource {
                 }
                 $try_bonus_for_game = 0;
                 if (!empty($tries_for_team_in_game) && $tries_for_team_in_game >= 4) {
-                    $try_bonus_for_game = (($tries_for_team_in_game - ($tries_for_team_in_game % 4)) / 4);
+                    $record['try_bonus_total'] +=1;
                 }
-                $record['try_bonus_total'] = empty($record['try_bonus_total']) ? $try_bonus_for_game : $record['try_bonus_total'] + $try_bonus_for_game;
             }
         }
 
