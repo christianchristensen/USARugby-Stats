@@ -1,6 +1,4 @@
 <?php
-use Source\Job\GroupAboveSyncJob;
-
 use Source\Job\GroupMembersSyncJob;
 
 include_once './include.php';
